@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL-FATTAH Premium PWA</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, query, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        /**
+         * PENTING: AGAR DATABASE TIDAK MATI/HABIS WAKTU
+         * Salin aturan di bawah ini ke Firebase Console > Firestore > Rules:
+         * * rules_version = '2';
+         * service cloud.firestore {
+         * match /databases/{database}/documents {
+         * match /artifacts/{appId}/public/data/{collection}/{document} {
+         * allow read: if request.auth != null;
+         * allow write: if request.auth != null;
+         * }
+         * }
+         * }
+         */
+
+        const userFirebaseConfig = {
+            apiKey: "AIzaSyBeBrCxrNCuXTHqVdSNLmx1XxKbFBVkMC0",
+            authDomain: "al-fattah-b8ba2.firebaseapp.com",
+            projectId: "al-fattah-b8ba2",
+            storageBucket: "al-fattah-b8ba2.firebasestorage.app",
+            messagingSenderId: "1071225100730",
+            appId: "1:1071225100730:web:2b899b003ee6d6b7c9a583"
+        };
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : userFirebaseConfig;
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'al-fattah-pwa';
+
+        window.db = db;
+        window.auth = auth;
+        window.appId = appId;
+        window.firestoreUtils = { collection, addDoc, onSnapshot, query, doc };
+
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth Error:", error);
+            }
+        }
+        window.initAuth = initAuth;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Authenticated:", user.uid);
+                if (window.startAppSync) window.startAppSync();
+            }
+        });
+    </script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: { 900: '#051A14', 800: '#0F3D2E' },
+                        gold: { DEFAULT: '#C6A75E', dark: '#927A41' }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .animate-loading { animation: loading 1.5s infinite; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .dark .glass { background: rgba(15, 61, 46, 0.4); border: 1px solid rgba(198, 167, 94, 0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .active-nav { color: #C6A75E; opacity: 1 !important; transform: translateY(-4px); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-[#F8F9FA] dark:bg-emerald-900 text-emerald-800 dark:text-white font-sans transition-colors duration-500 no-scrollbar overflow-x-hidden">
+
+    <!-- Splash Screen -->
+    <div id="splash" class="fixed inset-0 z-[100] bg-emerald-800 flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="relative animate-bounce">
+            <div class="w-24 h-24 border-4 border-gold rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(198,167,94,0.4)]">
+                <span class="text-4xl font-arabic text-gold">الفتاح</span>
+            </div>
+        </div>
+        <h1 class="mt-6 text-2xl font-bold text-gold tracking-widest">AL-FATTAH</h1>
+        <div class="mt-8 w-32 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-gold animate-loading"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-6 flex items-center justify-between glass shadow-lg">
+        <div>
+            <h2 class="text-gold font-bold text-lg tracking-tight">AL-FATTAH</h2>
+            <p class="text-[10px] opacity-50 flex items-center gap-1 font-medium"><i data-lucide="map-pin" class="w-3 h-3 text-gold"></i> Karang Bajo, Bayan</p>
+        </div>
+        <div class="flex gap-2">
+            <button id="adminToggle" class="w-10 h-10 rounded-full glass flex items-center justify-center text-gold/60 hover:text-gold transition-colors">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </button>
+            <button id="themeToggle" class="w-10 h-10 rounded-full glass flex items-center justify-center">
+                <i data-lucide="moon" id="themeIcon" class="w-5 h-5 text-gold"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative pt-28 pb-32 px-6 max-w-md mx-auto min-h-screen">
+        
+        <!-- Tab: Home -->
+        <div id="home" class="tab-content active space-y-8">
+            <!-- Hero Card (Prayer Countdown) -->
+            <section class="relative p-8 rounded-[32px] overflow-hidden shadow-2xl bg-gradient-to-br from-emerald-800 to-emerald-950">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-gold/10 rounded-full blur-3xl"></div>
+                <div class="relative z-10 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex flex-col">
+                            <span id="hijriDate" class="text-gold text-[11px] font-bold uppercase tracking-wider">14 Sya'ban 1445 H</span>
+                            <span id="gregorianDate" class="text-white/40 text-[10px]">-- --- ----</span>
+                        </div>
+                        <div class="glass px-2 py-1 rounded-lg flex items-center gap-1">
+                            <div class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                            <span class="text-[9px] font-bold text-white/70">LIVE</span>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <h1 id="clockDisplay" class="text-5xl font-mono font-bold text-white tracking-tighter">00:00</h1>
+                        <span id="secondsDisplay" class="text-white/30 text-sm font-mono">00</span>
+                    </div>
+                    <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+                        <div>
+                            <p id="nextPrayerLabel" class="text-[10px] text-white/40 uppercase font-bold tracking-widest">Memuat Waktu...</p>
+                            <p id="nextPrayerTime" class="text-gold font-bold text-lg">--:--</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] text-white/30 uppercase">Sisa Waktu</p>
+                            <p id="countdownDisplay" class="text-white font-mono text-sm">--:--:--</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Menu -->
+            <section class="grid grid-cols-4 gap-4">
+                <button onclick="switchTab('quran')" class="flex flex-col items-center gap-2 group">
+                    <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform"><i data-lucide="book-open"></i></div>
+                    <span class="text-[10px] opacity-60 uppercase font-bold tracking-tight">Quran</span>
+                </button>
+                <button onclick="switchTab('zikir')" class="flex flex-col items-center gap-2 group">
+                    <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform"><i data-lucide="sun"></i></div>
+                    <span class="text-[10px] opacity-60 uppercase font-bold tracking-tight">Zikir</span>
+                </button>
+                <button onclick="switchTab('guide')" class="flex flex-col items-center gap-2 group">
+                    <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform"><i data-lucide="clipboard-list"></i></div>
+                    <span class="text-[10px] opacity-60 uppercase font-bold tracking-tight">Panduan</span>
+                </button>
+                <button onclick="switchTab('donate')" class="flex flex-col items-center gap-2 group">
+                    <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center text-rose-400 group-hover:scale-110 transition-transform"><i data-lucide="heart"></i></div>
+                    <span class="text-[10px] opacity-60 uppercase font-bold tracking-tight">Infaq</span>
+                </button>
+            </section>
+
+            <!-- Hadith Harian -->
+            <section class="p-6 rounded-[32px] glass border-l-4 border-gold italic space-y-2">
+                <div class="flex items-center gap-2 opacity-40">
+                    <i data-lucide="quote" class="w-3 h-3"></i>
+                    <span class="text-[9px] font-bold uppercase tracking-widest">Hadits Harian</span>
+                </div>
+                <p id="dailyHadithText" class="text-xs leading-relaxed font-light">"Sesungguhnya setiap amalan tergantung pada niatnya."</p>
+                <p id="dailyHadithRef" class="text-[10px] font-bold text-gold">HR. Bukhari & Muslim</p>
+            </section>
+
+            <!-- Announcements -->
+            <section class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-lg">Warta Masjid</h3>
+                    <i data-lucide="megaphone" class="text-gold w-5 h-5"></i>
+                </div>
+                <div id="announcementList" class="space-y-3">
+                    <div class="p-6 rounded-3xl glass animate-pulse flex items-center justify-center text-xs opacity-40">Sinkronisasi data...</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab: Quran -->
+        <div id="quran" class="tab-content space-y-6">
+            <h2 class="text-2xl font-bold">Al-Qur'an</h2>
+            <div class="relative">
+                <input type="text" id="quranSearch" onkeyup="searchSurah()" placeholder="Cari Surah..." class="w-full h-12 pl-12 pr-4 glass rounded-2xl focus:outline-none focus:ring-1 focus:ring-gold transition-all">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-30 w-5 h-5"></i>
+            </div>
+            <div id="surahContainer" class="space-y-3 no-scrollbar max-h-[65vh] overflow-y-auto pr-1 pb-10">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+
+        <!-- Tab: Zikir -->
+        <div id="zikir" class="tab-content space-y-6">
+            <h2 class="text-2xl font-bold text-gold">Zikir Sunnah</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="showZikirList('pagi')" class="p-6 rounded-[32px] glass text-center space-y-3 border-b-4 border-amber-500 active:scale-95 transition-all">
+                    <div class="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-amber-500/10"><i data-lucide="sunrise"></i></div>
+                    <p class="font-bold">Zikir Pagi</p>
+                    <p class="text-[8px] opacity-40 uppercase font-bold tracking-widest leading-none mt-1">Shubuh - Syuruq</p>
+                </button>
+                <button onclick="showZikirList('petang')" class="p-6 rounded-[32px] glass text-center space-y-3 border-b-4 border-indigo-500 active:scale-95 transition-all">
+                    <div class="w-12 h-12 bg-indigo-500/20 text-indigo-500 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/10"><i data-lucide="sunset"></i></div>
+                    <p class="font-bold">Zikir Petang</p>
+                    <p class="text-[8px] opacity-40 uppercase font-bold tracking-widest leading-none mt-1">Ashar - Maghrib</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab: Guide -->
+        <div id="guide" class="tab-content space-y-6">
+            <h2 class="text-2xl font-bold">Tata Cara Sholat</h2>
+            <div class="space-y-4">
+                <div class="p-5 rounded-[28px] glass border-l-4 border-emerald-500 flex justify-between items-center group">
+                    <div>
+                        <h4 class="font-bold">Sifat Sholat Nabi</h4>
+                        <p class="text-xs opacity-50 font-light">Tuntunan sesuai hadits shahih</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500"><i data-lucide="play" class="w-4 h-4"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Donate -->
+        <div id="donate" class="tab-content space-y-6">
+            <h2 class="text-2xl font-bold">Infaq & Sedekah</h2>
+            <div class="p-8 rounded-[40px] glass border-l-4 border-gold relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-6 opacity-5"><i data-lucide="heart" class="w-24 h-24"></i></div>
+                <p class="text-[10px] uppercase font-bold text-gold opacity-60 mb-1 tracking-widest">Bank Syariah Indonesia (BSI)</p>
+                <h3 id="accNumber" class="text-2xl font-mono font-bold text-gold tracking-widest">714 8822 004</h3>
+                <p class="text-xs font-medium mt-4">Atas Nama: <span class="text-white">Masjid Al-Fattah Karang Bajo</span></p>
+                <button onclick="copyToClipboard('7148822004')" class="mt-8 w-full py-4 bg-gold/10 hover:bg-gold text-gold hover:text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-gold/5">
+                    <i data-lucide="copy" class="w-4 h-4"></i> Salin Nomor Rekening
+                </button>
+            </div>
+            <div class="text-center opacity-30 italic text-[10px] px-8">
+                "Harta tidak akan berkurang karena sedekah." (HR. Muslim)
+            </div>
+        </div>
+
+        <!-- Admin Mode -->
+        <div id="adminPanel" class="tab-content space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gold">Admin Al-Fattah</h2>
+                <button onclick="switchTab('home')" class="p-2 opacity-40 hover:opacity-100 transition-opacity"><i data-lucide="x"></i></button>
+            </div>
+            <div class="space-y-4 glass p-8 rounded-[40px] border border-gold/10">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold uppercase opacity-40 tracking-widest">Judul Kabar</label>
+                    <input type="text" id="adminAnnTitle" class="w-full h-14 px-5 bg-emerald-950/40 border border-white/5 rounded-2xl outline-none focus:border-gold transition-all">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold uppercase opacity-40 tracking-widest">Detail Informasi</label>
+                    <textarea id="adminAnnBody" class="w-full h-40 p-5 bg-emerald-950/40 border border-white/5 rounded-2xl outline-none focus:border-gold transition-all resize-none"></textarea>
+                </div>
+                <button onclick="saveAnnouncement()" class="w-full py-5 bg-gold text-emerald-950 font-bold rounded-2xl shadow-xl shadow-gold/20 active:scale-95 transition-all">Posting Sekarang</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md h-20 z-50">
+        <div class="w-full h-full glass rounded-[32px] shadow-2xl flex items-center justify-around px-2 border border-white/5">
+            <button onclick="switchTab('home')" class="nav-btn active-nav flex flex-col items-center gap-1 opacity-40 transition-all">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Home</span>
+            </button>
+            <button onclick="switchTab('quran')" class="nav-btn flex flex-col items-center gap-1 opacity-40 transition-all">
+                <i data-lucide="book" class="w-6 h-6"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Quran</span>
+            </button>
+            <button onclick="switchTab('zikir')" class="nav-btn flex flex-col items-center gap-1 opacity-40 transition-all">
+                <i data-lucide="sun" class="w-6 h-6"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Zikir</span>
+            </button>
+            <button onclick="switchTab('guide')" class="nav-btn flex flex-col items-center gap-1 opacity-40 transition-all">
+                <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Cara</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Reader Overlay -->
+    <div id="readerOverlay" class="fixed inset-0 z-[110] bg-emerald-900 hidden flex flex-col animate-in fade-in duration-300">
+        <header class="p-6 glass flex items-center justify-between border-b border-white/5">
+            <button onclick="closeReader()" class="w-10 h-10 rounded-full glass flex items-center justify-center transition-transform active:scale-90"><i data-lucide="arrow-left" class="text-gold"></i></button>
+            <h3 id="readerTitle" class="font-bold text-gold uppercase tracking-widest text-sm">Surah</h3>
+            <div class="w-10"></div>
+        </header>
+        <div id="readerContent" class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar pb-32">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const QURAN_API = "https://equran.id/api/v2/surat";
+        
+        const PRAYER_SCHEDULE = [
+            { id: 0, name: 'Subuh', time: '04:52' },
+            { id: 1, name: 'Syuruq', time: '06:08' },
+            { id: 2, name: 'Dzuhur', time: '12:21' },
+            { id: 3, name: 'Ashar', time: '15:35' },
+            { id: 4, name: 'Maghrib', time: '18:31' },
+            { id: 5, name: 'Isya', time: '19:42' }
+        ];
+
+        const HADITHS = [
+            { text: "Sesungguhnya setiap amalan tergantung pada niatnya.", ref: "HR. Bukhari & Muslim" },
+            { text: "Senyummu di hadapan saudaramu adalah sedekah.", ref: "HR. Tirmidzi" },
+            { text: "Barangsiapa yang menempuh jalan untuk mencari ilmu, maka Allah akan memudahkan baginya jalan ke surga.", ref: "HR. Muslim" }
+        ];
+
+        const ZIKIR_PAGI = [
+            { id: 1, arab: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", trans: "Ta'awudz", desc: "Aku berlindung kepada Allah dari godaan syaitan yang terkutuk.", faedah: "Mulai dengan perlindungan." },
+            { id: 2, arab: "اللَّهُ لاَ إِلَهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ...", trans: "Ayatul Kursi", desc: "Membaca Ayat Kursi (QS. Al-Baqarah: 255)", faedah: "Dilindungi dari setan hingga petang." },
+            { id: 3, arab: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. قُلْ هُوَ اللَّهُ أَحَدٌ...", trans: "Al-Ikhlas, Al-Falaq, An-Naas", desc: "Masing-masing dibaca 3x.", faedah: "Segala sesuatu akan dicukupkan untuknya." },
+            { id: 4, arab: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ...", trans: "Ash-bahnaa wa ash-bahal mulku lillah...", desc: "Pujian masuknya waktu pagi.", faedah: "Meminta kebaikan hari ini dan perlindungan dari malas." },
+            { id: 5, arab: "اَللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا...", trans: "Allahumma bika ash-bahnaa...", desc: "Ya Allah dengan rahmat-Mu kami memasuki pagi.", faedah: "Syukur atas kehidupan." },
+            { id: 6, arab: "اَللَّهُمَّ أَنْتَ rَبِّيْ لاَ إِلَـهَ إِلاَّ أَنْتَ...", trans: "Sayyidul Istighfar", desc: "Pimpinan Istighfar (Dibaca 1x).", faedah: "Mati sebelum petang, masuk surga." },
+            { id: 7, arab: "اَللَّهُمَّ إِنِّيْ أَصْبَحْتُ أُشْهِدُكَ...", trans: "Penyaksian Tauhid (4x)", desc: "Mempersaksikan Allah & Malaikat.", faedah: "Dibebaskan dari siksa neraka." }
+        ];
+
+        const ZIKIR_PETANG = [
+            { id: 1, arab: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ", trans: "Ta'awudz", desc: "Berlindung dari setan.", faedah: "Mulai perlindungan malam." },
+            { id: 2, arab: "اللَّهُ لاَ إِلَهَ إِlaَّ هُوَ الْحَيُّ الْقَيُّومُ...", trans: "Ayatul Kursi", desc: "Membaca Ayat Kursi (1x).", faedah: "Dilindungi hingga pagi." },
+            { id: 3, arab: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. قُلْ هُوَ اللَّهُ أَحَدٌ...", trans: "Al-Ikhlas, Al-Falaq, An-Naas (3x)", desc: "Perlindungan malam.", faedah: "Dicukupkan segala urusan." },
+            { id: 4, arab: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ للهِ...", trans: "Amsaynaa wa amsal mulku lillah...", desc: "Kami memasuki waktu petang.", faedah: "Kebaikan di malam ini." },
+            { id: 5, arab: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا...", trans: "Allahumma bika amsaynaa...", desc: "Doa memasuki sore hari.", faedah: "Pengakuan tempat kembali." },
+            { id: 6, arab: "اَللَّهُمَّ أَنْتَ rَبِّيْ لاَ إِلَـهَ إِلاَّ أَنْتَ...", trans: "Sayyidul Istighfar", desc: "Membaca 1x penuh keyakinan.", faedah: "Mati sebelum pagi, masuk surga." },
+            { id: 7, arab: "أَعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", trans: "Doa Perlindungan (3x)", desc: "Berlindung dari kejahatan makhluk.", faedah: "Tidak akan ada bahaya di malam itu." }
+        ];
+
+        // --- CORE LOGIC ---
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            const tabs = ['home', 'quran', 'zikir', 'guide'];
+            const idx = tabs.indexOf(tabId);
+            if(idx !== -1) document.querySelectorAll('.nav-btn')[idx].classList.add('active-nav');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = now.getMinutes().toString().padStart(2, '0');
+            const s = now.getSeconds().toString().padStart(2, '0');
+            
+            document.getElementById('clockDisplay').textContent = `${h}:${m}`;
+            document.getElementById('secondsDisplay').textContent = s;
+            document.getElementById('gregorianDate').textContent = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            calculateNextPrayer(now);
+        }
+
+        function calculateNextPrayer(now) {
+            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":00";
+            let next = null;
+
+            for (let p of PRAYER_SCHEDULE) {
+                if (p.time + ":00" > timeStr) {
+                    next = p;
+                    break;
+                }
+            }
+
+            if (!next) next = PRAYER_SCHEDULE[0]; // Next Subuh
+
+            document.getElementById('nextPrayerLabel').textContent = `Menuju ${next.name}`;
+            document.getElementById('nextPrayerTime').textContent = `${next.time} WITA`;
+
+            const target = new Date(now);
+            const [th, tm] = next.time.split(':');
+            target.setHours(parseInt(th), parseInt(tm), 0);
+            if (target < now) target.setDate(target.getDate() + 1);
+
+            const diff = target - now;
+            const dh = Math.floor(diff / 3600000);
+            const dm = Math.floor((diff % 3600000) / 60000);
+            const ds = Math.floor((diff % 60000) / 1000);
+
+            document.getElementById('countdownDisplay').textContent = 
+                `${dh.toString().padStart(2, '0')}:${dm.toString().padStart(2, '0')}:${ds.toString().padStart(2, '0')}`;
+        }
+
+        // --- QURAN LOGIC ---
+        async function loadSurahList() {
+            const container = document.getElementById('surahContainer');
+            const cached = localStorage.getItem('al-fattah-surahs');
+            if (cached) renderSurahs(JSON.parse(cached));
+
+            try {
+                const res = await fetch(QURAN_API);
+                const data = await res.json();
+                localStorage.setItem('al-fattah-surahs', JSON.stringify(data.data));
+                renderSurahs(data.data);
+            } catch (e) {
+                if(!cached) container.innerHTML = `<p class="text-center py-10 opacity-30 text-xs">Offline. Gagal memuat Quran.</p>`;
+            }
+        }
+
+        function renderSurahs(list) {
+            const container = document.getElementById('surahContainer');
+            container.innerHTML = list.map(s => `
+                <div onclick="openSurahReader(${s.nomor})" class="p-6 rounded-[28px] glass flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-xs font-bold text-gold">${s.nomor}</div>
+                        <div>
+                            <h4 class="font-bold text-sm tracking-wide">${s.namaLatin}</h4>
+                            <p class="text-[9px] opacity-40 uppercase tracking-tighter">${s.tempatTurun} • ${s.jumlahAyat} Ayat</p>
+                        </div>
+                    </div>
+                    <span class="text-2xl font-arabic text-gold">${s.nama}</span>
+                </div>
+            `).join('');
+        }
+
+        async function openSurahReader(id) {
+            const overlay = document.getElementById('readerOverlay');
+            const content = document.getElementById('readerContent');
+            const title = document.getElementById('readerTitle');
+            
+            overlay.classList.remove('hidden');
+            content.innerHTML = `<div class="py-40 text-center opacity-40"><div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-[10px] uppercase font-bold tracking-widest">Mengunduh Ayat...</p></div>`;
+            
+            try {
+                const res = await fetch(`${QURAN_API}/${id}`);
+                const data = await res.json();
+                const surah = data.data;
+                title.textContent = surah.namaLatin;
+                
+                content.innerHTML = `
+                    <div class="text-center py-12 space-y-6">
+                        <p class="text-gold font-arabic text-4xl leading-relaxed">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+                        <div class="h-0.5 w-16 bg-gold/10 mx-auto rounded-full"></div>
+                    </div>
+                    ${surah.ayat.map(a => `
+                        <div class="space-y-8 pb-12 border-b border-white/5">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-full bg-gold/5 border border-gold/10 flex items-center justify-center text-[10px] text-gold font-bold">${a.nomorAyat}</span>
+                            </div>
+                            <p class="text-right text-3xl font-arabic leading-[4.5rem] text-white tracking-wide">${a.teksArab}</p>
+                            <p class="text-sm opacity-60 font-light italic leading-relaxed text-left">"${a.teksIndonesia}"</p>
+                        </div>
+                    `).join('')}
+                    <div class="py-20 text-center text-[10px] opacity-20 uppercase font-bold tracking-[0.3em]">Akhir Surah</div>
+                `;
+            } catch (e) {
+                content.innerHTML = `<p class="text-center py-40 opacity-40">Gagal memuat surah.</p>`;
+            }
+        }
+
+        // --- ZIKIR LOGIC ---
+        function showZikirList(type) {
+            const data = type === 'pagi' ? ZIKIR_PAGI : ZIKIR_PETANG;
+            const overlay = document.getElementById('readerOverlay');
+            const content = document.getElementById('readerContent');
+            const title = document.getElementById('readerTitle');
+
+            overlay.classList.remove('hidden');
+            title.textContent = `Zikir ${type}`;
+            
+            content.innerHTML = data.map(z => `
+                <div class="p-8 rounded-[40px] glass space-y-8 relative overflow-hidden group">
+                    <div class="absolute -right-4 -top-4 w-16 h-16 bg-gold/5 rounded-full flex items-center justify-center text-xs font-bold text-gold/20">${z.id}</div>
+                    <p class="text-right text-3xl font-arabic leading-loose text-white">${z.arab}</p>
+                    <div class="space-y-3">
+                        <p class="text-xs font-bold text-gold">${z.trans}</p>
+                        <p class="text-[11px] opacity-60 leading-relaxed italic">"${z.desc}"</p>
+                    </div>
+                    <div class="pt-6 border-t border-white/5">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="award" class="w-3 h-3 text-gold"></i>
+                            <span class="text-[9px] uppercase font-bold text-gold tracking-widest">Keutamaan</span>
+                        </div>
+                        <p class="text-[10px] opacity-50 leading-relaxed">${z.faedah}</p>
+                    </div>
+                </div>
+            `).join('') + `<div class="py-20 text-center opacity-20 text-[10px] uppercase tracking-[0.3em] font-bold">Wallaahu A'lam</div>`;
+            
+            lucide.createIcons();
+        }
+
+        function closeReader() {
+            document.getElementById('readerOverlay').classList.add('hidden');
+        }
+
+        // --- FIREBASE SYNC ---
+        window.startAppSync = function() {
+            if (!window.db) return;
+            
+            const col = window.firestoreUtils.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'announcements');
+            window.firestoreUtils.onSnapshot(col, (snap) => {
+                const list = document.getElementById('announcementList');
+                if(snap.empty) {
+                    list.innerHTML = `<div class="p-10 text-center glass rounded-3xl opacity-20 text-[10px] uppercase font-bold tracking-widest italic">Belum ada warta terbaru.</div>`;
+                    return;
+                }
+                const items = snap.docs.map(d => d.data()).sort((a,b) => b.timestamp - a.timestamp);
+                list.innerHTML = items.map(i => `
+                    <div class="p-7 rounded-[32px] glass border-l-4 border-gold group hover:bg-white/[0.04] transition-all">
+                        <div class="flex justify-between items-start mb-3">
+                            <h4 class="font-bold text-gold text-xs tracking-widest uppercase">${i.title}</h4>
+                            <span class="text-[8px] opacity-30 font-bold uppercase tracking-tighter">Terbaru</span>
+                        </div>
+                        <p class="text-xs opacity-70 leading-relaxed font-light">${i.body}</p>
+                    </div>
+                `).join('');
+            });
+        }
+
+        // --- ADMIN ---
+        document.getElementById('adminToggle').addEventListener('click', () => {
+            const p = prompt("Masukkan PIN Admin Masjid:");
+            if (p === "1234") switchTab('adminPanel');
+            else if(p) alert("Akses Ditolak.");
+        });
+
+        async function saveAnnouncement() {
+            const title = document.getElementById('adminAnnTitle').value;
+            const body = document.getElementById('adminAnnBody').value;
+            if(!title || !body) return alert("Harap isi semua kolom.");
+
+            try {
+                const col = window.firestoreUtils.collection(window.db, 'artifacts', window.appId, 'public', 'data', 'announcements');
+                await window.firestoreUtils.addDoc(col, { title, body, timestamp: Date.now() });
+                alert("Berhasil disiarkan.");
+                document.getElementById('adminAnnTitle').value = "";
+                document.getElementById('adminAnnBody').value = "";
+                switchTab('home');
+            } catch(e) { alert("Terjadi kesalahan."); }
+        }
+
+        function copyToClipboard(txt) {
+            const el = document.createElement('textarea');
+            el.value = txt;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert("Nomor rekening disalin.");
+        }
+
+        // --- STARTUP ---
+        window.addEventListener('load', async () => {
+            if (window.initAuth) await window.initAuth();
+            
+            setTimeout(() => {
+                document.getElementById('splash').classList.add('opacity-0', 'pointer-events-none');
+                updateClock();
+                setInterval(updateClock, 1000);
+                loadSurahList();
+                
+                // Rotasi Hadits
+                const h = HADITHS[Math.floor(Math.random() * HADITHS.length)];
+                document.getElementById('dailyHadithText').textContent = `"${h.text}"`;
+                document.getElementById('dailyHadithRef').textContent = h.ref;
+            }, 2500);
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+    </script>
+</body>
+</html>
