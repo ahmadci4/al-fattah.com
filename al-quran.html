@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Fattah - Al-Qur'an</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .app-container { max-width: 480px; margin: 0 auto; background-color: #ffffff; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Sederhana -->
+        <div class="bg-[#5C8974] text-white p-4 flex justify-between items-center shadow-md z-20">
+            <h1 class="text-lg font-bold">Al-Qur'an Online</h1>
+            <a href="index.html" class="text-white"><i class="fa-solid fa-arrow-left text-xl"></i></a>
+        </div>
+
+        <!-- Fitur Batas Bacaan (Bookmark Manual) -->
+        <div class="px-4 py-3 bg-green-50 shadow-sm flex items-center justify-between z-20 border-b border-green-200">
+            <div class="w-[70%]">
+                <p class="text-[10px] text-gray-500 font-medium mb-1">Tandai Batas Bacaan (Tersimpan di HP)</p>
+                <input type="text" id="input-batas" placeholder="Cth: Al-Baqarah ayat 45" class="text-sm border border-gray-300 rounded-md px-3 py-1.5 w-full outline-none focus:border-[#5C8974]">
+            </div>
+            <button onclick="simpanBatas()" class="bg-[#5C8974] text-white text-xs font-bold px-4 py-2 mt-4 rounded-md shadow hover:bg-[#4A7260]">
+                Simpan
+            </button>
+        </div>
+
+        <!-- Notifikasi Berhasil Simpan -->
+        <div id="notif-simpan" class="hidden bg-green-500 text-white text-xs text-center py-1 font-medium transition-all">
+            Batas bacaan berhasil disimpan!
+        </div>
+
+        <!-- Iframe Al-Qur'an (Menggunakan Quran.com versi ID yang ringan untuk iFrame) -->
+        <iframe src="https://quran.com/id" class="w-full flex-grow border-0" style="height: calc(100vh - 190px);"></iframe>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 max-w-[480px] w-full bg-[#5C8974] rounded-t-2xl flex justify-around items-end pb-3 pt-4 text-white z-50">
+            <a href="index.html" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-house text-2xl mb-1"></i><span class="text-xs">Beranda</span>
+            </a>
+            <a href="al-quran.html" class="flex flex-col items-center opacity-100">
+                <i class="fa-solid fa-book-open text-2xl mb-1"></i><span class="text-xs">Al-Qur'an</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-bullhorn text-2xl mb-1"></i><span class="text-xs">Pengumuman</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-mosque text-2xl mb-1"></i><span class="text-xs">Muqadimah</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Logika untuk menyimpan dan memuat batas bacaan dari LocalStorage
+        const inputBatas = document.getElementById('input-batas');
+        const notifSimpan = document.getElementById('notif-simpan');
+
+        // Saat halaman dimuat, cek apakah ada batas bacaan yang tersimpan
+        document.addEventListener('DOMContentLoaded', () => {
+            const batasTersimpan = localStorage.getItem('batasBacaanQuran');
+            if (batasTersimpan) {
+                inputBatas.value = batasTersimpan;
+            }
+        });
+
+        // Fungsi menyimpan batas bacaan
+        function simpanBatas() {
+            const nilai = inputBatas.value;
+            localStorage.setItem('batasBacaanQuran', nilai);
+            
+            // Tampilkan notifikasi sesaat
+            notifSimpan.classList.remove('hidden');
+            setTimeout(() => {
+                notifSimpan.classList.add('hidden');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

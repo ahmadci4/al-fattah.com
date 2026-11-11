@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Fattah - Beranda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-hero {
+            background-image: url('images/bg-hero.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Menggunakan bg-[length:100%_100%] agar gambar proporsional mengikuti div */
+        .bg-scroll {
+            background-image: url('images/bg-scroll.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Scroll mulus untuk container menu */
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header Location & Live Clock -->
+        <div class="flex justify-between items-center p-4 bg-white">
+            <div class="flex items-center text-sm text-gray-700 font-medium">
+                <i class="fa-solid fa-location-dot text-green-700 mr-2 text-lg"></i>
+                <span class="truncate w-48">Ancak, Krg.Bajo, Kec.Bayan...</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span id="live-clock" class="text-sm font-bold tracking-wider">00:00:00</span>
+                <i class="fa-regular fa-bell text-xl"></i>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="bg-hero h-64 relative rounded-b-[40px] shadow-sm">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent rounded-b-[40px]">
+            </div>
+            <h1 class="absolute top-1/4 right-6 text-white text-3xl font-extrabold tracking-wider drop-shadow-md">
+                AL-FATTAH</h1>
+
+            <!-- Calendar Widget -->
+            <div
+                class="absolute bottom-10 left-4 bg-black/50 backdrop-blur-md text-white px-3 py-1.5 rounded-lg flex items-center text-[11px] border border-white/20">
+                <img src="images/icon-calendar.png" alt="Kalender" class="w-5 h-5 mr-2">
+                <span id="live-date">Memuat tanggal...</span>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative -mt-6 mx-6">
+            <div class="bg-white rounded-full shadow-lg p-3 flex items-center justify-between border border-gray-100">
+                <input type="text" placeholder="Cari Ibadah Apa?....."
+                    class="w-full pl-4 outline-none text-gray-600 text-sm">
+                <i class="fa-solid fa-chevron-down text-gray-400 mr-3"></i>
+                <i class="fa-solid fa-magnifying-glass text-gray-300 text-xl mr-2"></i>
+            </div>
+        </div>
+
+        <!-- Waktu Shalat (Dirapatkan & Dipercantik) -->
+        <div class="mt-8 px-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Waktu Shalat</h2>
+                <span id="countdown-prayer"
+                    class="text-[10px] font-bold text-[#3B7258] bg-green-100 px-3 py-1 rounded-full shadow-sm">Hitung
+                    mundur...</span>
+            </div>
+
+            <!-- Grid justify-center dan gap rapat -->
+            <div class="flex justify-center gap-3 text-center px-1">
+                <div class="flex flex-col items-center">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#4A5D23] to-[#2C3815] border-2 border-[#D4AF37]/50 text-white flex items-center justify-center font-bold text-sm shadow-md mb-2 transition-transform hover:scale-105"
+                        id="time-fajr">--:--</div>
+                    <span class="text-xs font-semibold text-gray-700">Subuh</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#4A5D23] to-[#2C3815] border-2 border-[#D4AF37]/50 text-white flex items-center justify-center font-bold text-sm shadow-md mb-2 transition-transform hover:scale-105"
+                        id="time-dhuhr">--:--</div>
+                    <span class="text-xs font-semibold text-gray-700">Dzuhur</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#4A5D23] to-[#2C3815] border-2 border-[#D4AF37]/50 text-white flex items-center justify-center font-bold text-sm shadow-md mb-2 transition-transform hover:scale-105"
+                        id="time-asr">--:--</div>
+                    <span class="text-xs font-semibold text-gray-700">Ashar</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#4A5D23] to-[#2C3815] border-2 border-[#D4AF37]/50 text-white flex items-center justify-center font-bold text-sm shadow-md mb-2 transition-transform hover:scale-105"
+                        id="time-maghrib">--:--</div>
+                    <span class="text-xs font-semibold text-gray-700">Magrib</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#4A5D23] to-[#2C3815] border-2 border-[#D4AF37]/50 text-white flex items-center justify-center font-bold text-sm shadow-md mb-2 transition-transform hover:scale-105"
+                        id="time-isha">--:--</div>
+                    <span class="text-xs font-semibold text-gray-700">Isya</span>
+                </div>
+            </div>
+            <div class="border-b border-dashed border-gray-300 mt-5 mx-2"></div>
+        </div>
+
+        <!-- Ibadah Menu (Diperbesar dengan Scroll Horisontal) -->
+        <div class="mt-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-3 px-4">Ibadah</h2>
+            <div class="relative flex items-center group">
+                <!-- Tombol Kiri -->
+                <button onclick="scrollContainer('ibadah-scroll', -200)"
+                    class="absolute left-1 z-10 bg-white/80 p-2 rounded-full shadow-md text-[#5d8770] hover:bg-gray-100 hidden sm:group-hover:flex">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <div id="ibadah-scroll"
+                    class="flex overflow-x-auto hide-scrollbar scroll-smooth gap-5 px-6 py-2 w-full snap-x">
+                    <!-- Item Ibadah (Diperbesar w-14 h-14) -->
+                    <a href="hadis-harian.html" class="flex flex-col items-center flex-shrink-0 snap-start">
+                        <img src="images/icon-hadis.png" class="w-14 h-14 mb-2 object-contain" alt="Hadis">
+                        <span
+                            class="text-[11px] font-bold text-center leading-tight text-gray-700">Hadis<br>Harian</span>
+                    </a>
+                    <a href="panduan-shalat.html" class="flex flex-col items-center flex-shrink-0 snap-start">
+                        <img src="images/icon-shalat.png" class="w-14 h-14 mb-2 object-contain" alt="Shalat">
+                        <span
+                            class="text-[11px] font-bold text-center leading-tight text-gray-700">Panduan<br>Shalat</span>
+                    </a>
+                    <a href="zikir-pagi-petang.html" class="flex flex-col items-center flex-shrink-0 snap-start">
+                        <img src="images/icon-zikir.png" class="w-14 h-14 mb-2 object-contain" alt="Zikir">
+                        <span class="text-[11px] font-bold text-center leading-tight text-gray-700">Zikir<br>Pagi
+                            Petang</span>
+                    </a>
+                    <a href="tadarus.html" class="flex flex-col items-center flex-shrink-0 snap-start">
+                        <img src="images/icon-tadarus.png" class="w-14 h-14 mb-2 object-contain" alt="Tadarus">
+                        <span class="text-[11px] font-bold text-center leading-tight mt-1 text-gray-700">Tadarus</span>
+                    </a>
+                    <a href="1-menit-emas.html" class="flex flex-col items-center flex-shrink-0 snap-start">
+                        <img src="images/icon-1menit.png" class="w-14 h-14 mb-2 object-contain" alt="1 Menit Emas">
+                        <span class="text-[11px] font-bold text-center leading-tight text-gray-700">1
+                            Menit<br>emas</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center flex-shrink-0 snap-start">
+                        <img src="images/icon-donasi.png" class="w-14 h-14 mb-2 object-contain" alt="Donasi">
+                        <span class="text-[11px] font-bold text-center leading-tight mt-1 text-gray-700">Donasi</span>
+                    </a>
+                </div>
+
+                <!-- Tombol Kanan -->
+                <button onclick="scrollContainer('ibadah-scroll', 200)"
+                    class="absolute right-1 z-10 bg-white/80 p-2 rounded-full shadow-md text-[#5d8770] hover:bg-gray-100 hidden sm:group-hover:flex">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="border-b border-dashed border-gray-300 mt-5 mx-6"></div>
+        </div>
+
+        <!-- Video Kajian (Diperbesar dengan Scroll Kiri/Kanan) -->
+        <div class="mt-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-3 px-4">Video Kajian</h2>
+            <div class="relative flex items-center px-2">
+                <!-- Tombol Kiri (Selalu Tampil) -->
+                <button onclick="scrollContainer('video-scroll', -200)"
+                    class="z-10 text-[#5d8770] hover:text-[#3B7258] text-xl p-2 shrink-0">
+                    <i class="fa-solid fa-circle-chevron-left"></i>
+                </button>
+
+                <div id="video-scroll"
+                    class="flex overflow-x-auto hide-scrollbar scroll-smooth gap-4 py-2 px-2 w-full snap-x">
+                    <!-- Ustadz (Diperbesar w-16 h-16) -->
+                    <a href="ustadz-khalid.html"
+                        class="flex flex-col items-center flex-shrink-0 cursor-pointer hover:opacity-80 snap-start w-16">
+                        <img src="images/ustadz-khalid.png"
+                            class="w-16 h-16 rounded-full border-[3px] border-[#5d8770] object-cover shadow-sm"
+                            alt="Khalid">
+                        <span class="text-[10px] mt-2 font-semibold text-center leading-tight text-gray-700">Khalid
+                            basalamah</span>
+                    </a>
+                    <a href="ustadz-somad.html"
+                        class="flex flex-col items-center flex-shrink-0 cursor-pointer hover:opacity-80 snap-start w-16">
+                        <img src="images/ustadz-somad.png"
+                            class="w-16 h-16 rounded-full border border-gray-200 object-cover shadow-sm" alt="Somad">
+                        <span class="text-[10px] mt-2 font-semibold text-center leading-tight text-gray-700">Ust.Abdul
+                            Somad</span>
+                    </a>
+                    <a href="ustadz-adi.html"
+                        class="flex flex-col items-center flex-shrink-0 cursor-pointer hover:opacity-80 snap-start w-16">
+                        <img src="images/ustadz-adi.png"
+                            class="w-16 h-16 rounded-full border border-gray-200 object-cover shadow-sm" alt="Adi">
+                        <span class="text-[10px] mt-2 font-semibold text-center leading-tight text-gray-700">Ust.Adi
+                            Hidayat</span>
+                    </a>
+                    <a href="ustadz-hanan.html"
+                        class="flex flex-col items-center flex-shrink-0 cursor-pointer hover:opacity-80 snap-start w-16">
+                        <img src="images/ustadz-hanan.png"
+                            class="w-16 h-16 rounded-full border border-gray-200 object-cover shadow-sm" alt="Hanan">
+                        <span class="text-[10px] mt-2 font-semibold text-center leading-tight text-gray-700">Ust.Hanan
+                            Attaqi</span>
+                    </a>
+                    <a href="ustadz-felix.html"
+                        class="flex flex-col items-center flex-shrink-0 cursor-pointer hover:opacity-80 snap-start w-16">
+                        <img src="images/ustadz-felix.png"
+                            class="w-16 h-16 rounded-full border border-gray-200 object-cover shadow-sm" alt="Felix">
+                        <span class="text-[10px] mt-2 font-semibold text-center leading-tight text-gray-700">Ust.Felix
+                            Siauw</span>
+                    </a>
+                    <a href="#"
+                        class="flex flex-col items-center flex-shrink-0 cursor-pointer hover:opacity-80 snap-start w-16">
+                        <img src="images/ustadz-dasad.png"
+                            class="w-16 h-16 rounded-full border border-gray-200 object-cover shadow-sm" alt="Dasad">
+                        <span class="text-[10px] mt-2 font-semibold text-center leading-tight text-gray-700">Ust.Das'ad
+                            Latif</span>
+                    </a>
+                </div>
+
+                <!-- Tombol Kanan (Selalu Tampil) -->
+                <button onclick="scrollContainer('video-scroll', 200)"
+                    class="z-10 text-[#5d8770] hover:text-[#3B7258] text-xl p-2 shrink-0">
+                    <i class="fa-solid fa-circle-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll Quote (Ukuran Font Dikecilkan & Padding Diperbaiki) -->
+        <div class="mt-6 px-6 pb-12">
+            <div
+                class="bg-scroll px-10 py-10 flex flex-col items-center justify-center text-center min-h-[160px] drop-shadow-md">
+                <p class="text-[11px] leading-relaxed font-semibold text-gray-800 mb-2">
+                    "Keutamaan orang yang berilmu dibandingkan dengan ahli ibadah adalah seperti keutamaan bulan purnama
+                    di atas seluruh bintang-bintang."
+                </p>
+                <p class="text-[10px] font-extrabold text-gray-900">
+                    (HR. Abu Dawud no. 3641 dan Tirmidzi no. 2682)
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div
+            class="fixed bottom-0 max-w-[480px] w-full bg-[#5C8974] rounded-t-2xl flex justify-around items-end pb-3 pt-4 text-white z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+            <a href="index.html" class="flex flex-col items-center opacity-100">
+                <i class="fa-solid fa-house text-2xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Beranda</span>
+            </a>
+            <!-- Tautan Al-Qur'an In-App -->
+            <a href="al-quran.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-book-open text-2xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Al-Qur'an</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-bullhorn text-2xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Pengumuman</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-mosque text-2xl mb-1"></i>
+                <span class="text-[10px] font-semibold">Muqadimah</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Elemen Audio untuk Azan -->
+    <audio id="audioAzan" src="assets/azan.mp3" preload="auto"></audio>
+
+    <script>
+        // Fungsi Scroll Kiri/Kanan dengan Tombol
+        function scrollContainer(containerId, offset) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.scrollBy({left: offset, behavior: 'smooth'});
+            }
+        }
+
+        // Data Waktu Shalat
+        const lat = -8.266;
+        const lng = 116.421;
+        let prayerTimes = {};
+
+        async function fetchPrayerTimes() {
+            const date = new Date();
+            const dd = String(date.getDate()).padStart(2, '0');
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = date.getFullYear();
+
+            const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}?latitude=${lat}&longitude=${lng}&method=20`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                prayerTimes = {
+                    "Subuh": data.data.timings.Fajr,
+                    "Dzuhur": data.data.timings.Dhuhr,
+                    "Ashar": data.data.timings.Asr,
+                    "Magrib": data.data.timings.Maghrib,
+                    "Isya": data.data.timings.Isha
+                };
+
+                document.getElementById('time-fajr').innerText = prayerTimes.Subuh;
+                document.getElementById('time-dhuhr').innerText = prayerTimes.Dzuhur;
+                document.getElementById('time-asr').innerText = prayerTimes.Ashar;
+                document.getElementById('time-maghrib').innerText = prayerTimes.Magrib;
+                document.getElementById('time-isha').innerText = prayerTimes.Isya;
+
+                // Update Hijri Date dari API
+                const hijri = data.data.date.hijri;
+                const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                const namaHari = hariIndo[date.getDay()];
+                const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const namaBulan = bulanIndo[date.getMonth()];
+
+                const fullDateStr = `${namaHari}, ${hijri.day} ${hijri.month.en} ${hijri.year} H / ${date.getDate()} ${namaBulan} ${yyyy}`;
+                document.getElementById('live-date').innerText = fullDateStr;
+
+            } catch (e) {
+                console.log("Gagal fetch jadwal:", e);
+            }
+        }
+
+        // Live Clock dan Hitung Mundur (NaN Fix Menggunakan Integer Detik)
+        let azanPlayedFor = null;
+
+        function updateClockAndCountdown() {
+            const now = new Date();
+            const currH = now.getHours();
+            const currM = now.getMinutes();
+            const currS = now.getSeconds();
+
+            // Format jam agar selalu 2 digit (misal 04:05:09)
+            const formatTime = (num) => String(num).padStart(2, '0');
+            document.getElementById('live-clock').innerText = `${formatTime(currH)}:${formatTime(currM)}:${formatTime(currS)}`;
+
+            if (Object.keys(prayerTimes).length > 0) {
+                const currentTotalSeconds = (currH * 3600) + (currM * 60) + currS;
+
+                let nextPrayerName = "";
+                let nextPrayerTimeStr = "";
+                let nextPrayerTotalSeconds = 0;
+
+                // Cari shalat selanjutnya
+                for (let [name, time] of Object.entries(prayerTimes)) {
+                    const [pH, pM] = time.split(':').map(Number);
+                    const prayerTotalSeconds = (pH * 3600) + (pM * 60);
+
+                    if (currentTotalSeconds < prayerTotalSeconds) {
+                        nextPrayerName = name;
+                        nextPrayerTimeStr = time;
+                        nextPrayerTotalSeconds = prayerTotalSeconds;
+                        break;
+                    }
+                }
+
+                // Jika sudah lewat isya, targetkan subuh besok
+                if (!nextPrayerName) {
+                    nextPrayerName = "Subuh";
+                    nextPrayerTimeStr = prayerTimes.Subuh;
+                    const [subuhH, subuhM] = prayerTimes.Subuh.split(':').map(Number);
+                    nextPrayerTotalSeconds = (subuhH * 3600) + (subuhM * 60) + 86400; // + 1 hari (86400 detik)
+                }
+
+                // Kalkulasi hitung mundur murni dengan matematika integer
+                const diffSecs = nextPrayerTotalSeconds - currentTotalSeconds;
+                const h = Math.floor(diffSecs / 3600);
+                const m = Math.floor((diffSecs % 3600) / 60);
+                const s = diffSecs % 60;
+
+                document.getElementById('countdown-prayer').innerText = `- ${h}j ${m}m ${s}d ke ${nextPrayerName}`;
+
+                // Trigger Audio Azan
+                const currentHourMin = `${formatTime(currH)}:${formatTime(currM)}`;
+                if (currentHourMin === nextPrayerTimeStr && s === 0 && azanPlayedFor !== nextPrayerName) {
+                    const audio = document.getElementById('audioAzan');
+                    if (audio) {audio.play();}
+                    azanPlayedFor = nextPrayerName;
+                }
+            }
+        }
+
+        fetchPrayerTimes();
+        setInterval(updateClockAndCountdown, 1000);
+    </script>
+</body>
+
+</html>

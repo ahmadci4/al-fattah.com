@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Fattah - 1 Menit Emas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .app-container { max-width: 480px; margin: 0 auto; background-color: #3E7960; min-height: 100vh; position: relative; padding-bottom: 90px; }
+        .bg-1menit-header { background-image: url('images/bg-1menit.jpg'); background-size: cover; background-position: center; }
+        .audio-player::-webkit-media-controls-panel { background-color: #ffffff; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="bg-1menit-header h-64 relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#3E7960] via-black/40 to-black/60"></div>
+            
+            <div class="absolute top-4 left-4 right-4 flex justify-between items-center text-white">
+                <div class="bg-black/40 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center text-xs">
+                    <img src="images/icon-calendar.png" class="w-4 h-4 mr-1" alt="Kalender">
+                    <span id="live-date">Memuat tanggal...</span>
+                </div>
+                <i class="fa-regular fa-bell text-xl"></i>
+            </div>
+
+            <div class="absolute inset-0 flex flex-col items-center justify-center mt-6">
+                <h1 class="text-4xl font-bold text-white tracking-wide" style="-webkit-text-stroke: 1px black;">1 MENIT EMAS</h1>
+            </div>
+            
+            <!-- Posisi gambar jam seperti disketsa (Asset dekorasi jika diperlukan nanti) -->
+            <img src="images/jam-beker.png" class="absolute -bottom-4 right-4 w-28 drop-shadow-xl" alt="Jam Emas">
+        </div>
+
+        <!-- Content Area -->
+        <div class="px-6 text-white text-sm leading-relaxed mt-8 text-justify">
+            <p class="mb-4">Banyak diantara kita yang beralasan ibadah karena kesibukan pekerjaan, urusan perut, dan lain sebagainya. padahal Allah hanya meminta sedikit waktu dari 24 jam sehari semalam. Yakinkah engkau wahai saudara bahwa solat 5 waktu yang belum tentu diterima tersebut bisa cukup mengantarkan kita kepada rahmatnya Allah.</p>
+            
+            <p class="mb-6 font-semibold">ibadah Apa saja yang bisa kita dapatkan hanya dalam waktu 1 menit?..</p>
+            
+            <p class="mb-3 font-semibold">Simak Penjelasan berikut</p>
+        </div>
+
+        <!-- Audio Player Box -->
+        <div class="px-6 relative z-10">
+            <div class="bg-white rounded-[30px] p-2 flex items-center shadow-xl">
+                <!-- Elemen audio bawaan HTML -->
+                <audio controls class="audio-player w-full h-12 outline-none">
+                    <source src="assets/kajian-1menit.mp3" type="audio/mpeg">
+                    Browser Anda tidak mendukung elemen audio.
+                </audio>
+            </div>
+            <p class="text-xs text-center text-gray-200 mt-2 italic">*Berisi rekaman potongan kajian</p>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 max-w-[480px] w-full bg-[#5C8974] rounded-t-2xl flex justify-around items-end pb-3 pt-4 text-white z-50">
+            <a href="index.html" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-house text-2xl mb-1"></i><span class="text-xs">Beranda</span>
+            </a>
+            <a href="al-quran.html" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-book-open text-2xl mb-1"></i><span class="text-xs">Al-Qur'an</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-bullhorn text-2xl mb-1"></i><span class="text-xs">Pengumuman</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-mosque text-2xl mb-1"></i><span class="text-xs">Muqadimah</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('live-date').innerText = new Date().toLocaleDateString('id-ID', dateOpts);
+    </script>
+</body>
+</html>
