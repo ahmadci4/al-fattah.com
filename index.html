@@ -278,7 +278,6 @@
                 <i class="fa-solid fa-house text-2xl mb-1"></i>
                 <span class="text-[10px] font-semibold">Beranda</span>
             </a>
-            <!-- Tautan Al-Qur'an In-App -->
             <a href="al-quran.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
                 <i class="fa-solid fa-book-open text-2xl mb-1"></i>
                 <span class="text-[10px] font-semibold">Al-Qur'an</span>
@@ -298,13 +297,61 @@
     <audio id="audioAzan" src="assets/azan.mp3" preload="auto"></audio>
 
     <script>
-        // Fungsi Scroll Kiri/Kanan dengan Tombol
+        // DUPLIKASI KONTEN SAAT HALAMAN DIMUAT AGAR BISA SCROLL MEMUTAR
+        document.addEventListener('DOMContentLoaded', () => {
+            const ibadahScroll = document.getElementById('ibadah-scroll');
+            const videoScroll = document.getElementById('video-scroll');
+
+            // Gandakan isi list agar terlihat bersambung terus
+            if (ibadahScroll) ibadahScroll.innerHTML += ibadahScroll.innerHTML;
+            if (videoScroll) videoScroll.innerHTML += videoScroll.innerHTML;
+        });
+
+        // FUNGSI SCROLL KIRI/KANAN DENGAN LOGIKA SEAMLESS LOOP (TELEPORTASI)
         function scrollContainer(containerId, offset) {
             const container = document.getElementById(containerId);
-            if (container) {
-                container.scrollBy({left: offset, behavior: 'smooth'});
+            if (!container) return;
+
+            const halfWidth = container.scrollWidth / 2;
+
+            // Jika tombol KANAN ditekan dan posisi sudah melewati titik tengah
+            if (offset > 0 && container.scrollLeft >= halfWidth - 50) {
+                // Matikan animasi smooth
+                container.style.scrollBehavior = 'auto';
+                container.classList.remove('scroll-smooth');
+
+                // Lempar posisi scroll kembali ke awal (tidak disadari mata karena isinya identik)
+                container.scrollLeft = 0;
+
+                // Nyalakan animasi smooth lagi dalam hitungan milidetik, lalu geser
+                setTimeout(() => {
+                    container.style.scrollBehavior = 'smooth';
+                    container.classList.add('scroll-smooth');
+                    container.scrollBy({left: offset, behavior: 'smooth'});
+                }, 20);
+                return;
             }
+
+            // Jika tombol KIRI ditekan dan posisi sudah mentok di awal
+            if (offset < 0 && container.scrollLeft <= 10) {
+                container.style.scrollBehavior = 'auto';
+                container.classList.remove('scroll-smooth');
+
+                // Lempar posisi scroll ke tengah (titik awal hasil copy-an)
+                container.scrollLeft = halfWidth;
+
+                setTimeout(() => {
+                    container.style.scrollBehavior = 'smooth';
+                    container.classList.add('scroll-smooth');
+                    container.scrollBy({left: offset, behavior: 'smooth'});
+                }, 20);
+                return;
+            }
+
+            // Geser normal jika belum mencapai batas
+            container.scrollBy({left: offset, behavior: 'smooth'});
         }
+
 
         // Data Waktu Shalat
         const lat = -8.266;
