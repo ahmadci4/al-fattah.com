@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Fattah - Murottal Al-Qur'an</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .app-container { max-width: 480px; margin: 0 auto; background-color: #ffffff; min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .bg-murottal { background-image: url('images/bg-hero.jpg'); background-size: cover; background-position: center; }
+        
+        /* Modifikasi tampilan default audio player agar rapi */
+        audio::-webkit-media-controls-enclosure { background-color: #f0fdf4; border-radius: 8px; }
+        audio::-webkit-media-controls-panel { background-color: #f0fdf4; }
+        
+        /* Animasi buka tutup */
+        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+        .accordion-content.open { max-height: 1000px; opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header & Hero Section -->
+        <div class="bg-murottal h-48 relative rounded-b-[30px] shadow-md">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#386955] via-[#386955]/80 to-black/40 rounded-b-[30px]"></div>
+            
+            <!-- Tombol Kembali & Judul -->
+            <div class="absolute top-4 left-4 right-4 flex items-center text-white z-10 space-x-3">
+                <a href="index.html" class="bg-black/30 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-black/50 transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <h1 class="text-lg font-bold tracking-wide">Murottal Al-Qur'an</h1>
+            </div>
+
+            <!-- Teks Hero -->
+            <div class="absolute bottom-6 left-6 right-6 z-10 text-white">
+                <h2 class="text-2xl font-extrabold mb-1">Dengarkan Kalamullah</h2>
+                <p class="text-xs text-gray-200">Pilih Qori favorit Anda untuk mendengarkan lantunan suci Al-Qur'an.</p>
+            </div>
+        </div>
+
+        <!-- Daftar Qori (Menggunakan JavaScript untuk Generate agar kode tidak terlalu panjang) -->
+        <div class="px-5 mt-6 space-y-3" id="qori-container">
+            <!-- Isi daftar qori dan audionya akan dimasukkan otomatis oleh JavaScript di bawah -->
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 max-w-[480px] w-full bg-[#5C8974] rounded-t-2xl flex justify-around items-end pb-3 pt-4 text-white z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+            <a href="index.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-house text-2xl mb-1"></i><span class="text-[10px] font-semibold">Beranda</span>
+            </a>
+            <a href="al-quran.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-book-open text-2xl mb-1"></i><span class="text-[10px] font-semibold">Al-Qur'an</span>
+            </a>
+            <a href="pengumuman.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-bullhorn text-2xl mb-1"></i><span class="text-[10px] font-semibold">Pengumuman</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-mosque text-2xl mb-1"></i><span class="text-[10px] font-semibold">Muqadimah</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Data Qori dan List 10 Surah (Bisa Anda sesuaikan file audionya nanti di bagian src)
+        const daftarQori = [
+            {
+                id: "qori-1",
+                nama: "Lili Rahmah",
+                foto: "images/qori-lili.jpg",
+                surah: [
+                    { judul: "1. Surah Al-Fatihah", file: "assets/lili-1.mp3" },
+                    { judul: "2. Surah Ar-Rahman", file: "assets/lili-2.mp3" },
+                    { judul: "3. Surah Al-Waqi'ah", file: "assets/lili-3.mp3" },
+                    { judul: "4. Surah Al-Mulk", file: "assets/lili-4.mp3" },
+                    { judul: "5. Surah Yasin", file: "assets/lili-5.mp3" },
+                    { judul: "6. Surah Al-Kahf", file: "assets/lili-6.mp3" },
+                    { judul: "7. Surah As-Sajdah", file: "assets/lili-7.mp3" },
+                    { judul: "8. Surah Al-Insan", file: "assets/lili-8.mp3" },
+                    { judul: "9. Surah Luqman", file: "assets/lili-9.mp3" },
+                    { judul: "10. Surah Maryam", file: "assets/lili-10.mp3" }
+                ]
+            },
+            {
+                id: "qori-2",
+                nama: "KH. Muammar ZA",
+                foto: "images/qori-muamar.jpg",
+                surah: [
+                    { judul: "1. Surah Al-Fatihah", file: "assets/muamar-1.mp3" },
+                    { judul: "2. Surah Ar-Rahman", file: "assets/muamar-2.mp3" },
+                    { judul: "3. Surah Al-Waqi'ah", file: "assets/muamar-3.mp3" },
+                    { judul: "4. Surah Al-Mulk", file: "assets/muamar-4.mp3" },
+                    { judul: "5. Surah Yasin", file: "assets/muamar-5.mp3" },
+                    { judul: "6. Surah Al-Kahf", file: "assets/muamar-6.mp3" },
+                    { judul: "7. Surah As-Sajdah", file: "assets/muamar-7.mp3" },
+                    { judul: "8. Surah Al-Insan", file: "assets/muamar-8.mp3" },
+                    { judul: "9. Surah Luqman", file: "assets/muamar-9.mp3" },
+                    { judul: "10. Surah Maryam", file: "assets/muamar-10.mp3" }
+                ]
+            },
+            {
+                id: "qori-3",
+                nama: "Misyari Rasyid Alafasy",
+                foto: "images/qori-misyari.jpg",
+                surah: [
+                    { judul: "1. Surah Al-Fatihah", file: "assets/misyari-1.mp3" },
+                    { judul: "2. Surah Ar-Rahman", file: "assets/misyari-2.mp3" },
+                    { judul: "3. Surah Al-Waqi'ah", file: "assets/misyari-3.mp3" },
+                    { judul: "4. Surah Al-Mulk", file: "assets/misyari-4.mp3" },
+                    { judul: "5. Surah Yasin", file: "assets/misyari-5.mp3" },
+                    { judul: "6. Surah Al-Kahf", file: "assets/misyari-6.mp3" },
+                    { judul: "7. Surah As-Sajdah", file: "assets/misyari-7.mp3" },
+                    { judul: "8. Surah Al-Insan", file: "assets/misyari-8.mp3" },
+                    { judul: "9. Surah Luqman", file: "assets/misyari-9.mp3" },
+                    { judul: "10. Surah Maryam", file: "assets/misyari-10.mp3" }
+                ]
+            },
+            {
+                id: "qori-4",
+                nama: "Syeikh Abdul Karim Al-Makki",
+                foto: "images/qori-abdulkarim.jpg",
+                surah: [
+                    { judul: "1. Surah Al-Fatihah", file: "assets/abdulkarim-1.mp3" },
+                    { judul: "2. Surah Ar-Rahman", file: "assets/abdulkarim-2.mp3" },
+                    { judul: "3. Surah Al-Waqi'ah", file: "assets/abdulkarim-3.mp3" },
+                    { judul: "4. Surah Al-Mulk", file: "assets/abdulkarim-4.mp3" },
+                    { judul: "5. Surah Yasin", file: "assets/abdulkarim-5.mp3" },
+                    { judul: "6. Surah Al-Kahf", file: "assets/abdulkarim-6.mp3" },
+                    { judul: "7. Surah As-Sajdah", file: "assets/abdulkarim-7.mp3" },
+                    { judul: "8. Surah Al-Insan", file: "assets/abdulkarim-8.mp3" },
+                    { judul: "9. Surah Luqman", file: "assets/abdulkarim-9.mp3" },
+                    { judul: "10. Surah Maryam", file: "assets/abdulkarim-10.mp3" }
+                ]
+            },
+            {
+                id: "qori-5",
+                nama: "Muzammil Hasballah",
+                foto: "images/qori-muzammil.jpg",
+                surah: [
+                    { judul: "1. Surah Al-Fatihah", file: "assets/muzammil-1.mp3" },
+                    { judul: "2. Surah Ar-Rahman", file: "assets/muzammil-2.mp3" },
+                    { judul: "3. Surah Al-Waqi'ah", file: "assets/muzammil-3.mp3" },
+                    { judul: "4. Surah Al-Mulk", file: "assets/muzammil-4.mp3" },
+                    { judul: "5. Surah Yasin", file: "assets/muzammil-5.mp3" },
+                    { judul: "6. Surah Al-Kahf", file: "assets/muzammil-6.mp3" },
+                    { judul: "7. Surah As-Sajdah", file: "assets/muzammil-7.mp3" },
+                    { judul: "8. Surah Al-Insan", file: "assets/muzammil-8.mp3" },
+                    { judul: "9. Surah Luqman", file: "assets/muzammil-9.mp3" },
+                    { judul: "10. Surah Maryam", file: "assets/muzammil-10.mp3" }
+                ]
+            }
+        ];
+
+        // Render HTML secara dinamis
+        const container = document.getElementById('qori-container');
+        
+        daftarQori.forEach(qori => {
+            // Generate list 10 audio
+            let audioListHTML = '';
+            qori.surah.forEach(item => {
+                audioListHTML += `
+                    <div class="bg-white p-2.5 rounded-lg border border-green-100 shadow-sm flex flex-col mb-2">
+                        <span class="text-[11px] font-bold text-gray-700 mb-1 ml-1"><i class="fa-solid fa-headphones text-[#5C8974] mr-1"></i> ${item.judul}</span>
+                        <audio controls class="w-full h-8 outline-none">
+                            <source src="${item.file}" type="audio/mpeg">
+                        </audio>
+                    </div>
+                `;
+            });
+
+            // Template Header Akordeon tiap Qori
+            const qoriHTML = `
+                <div class="rounded-xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+                    <button onclick="toggleQori('${qori.id}')" class="w-full p-3 flex justify-between items-center bg-white hover:bg-green-50 transition-colors">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-[#5C8974] shadow-sm">
+                                <img src="${qori.foto}" class="w-full h-full object-cover" alt="${qori.nama}">
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-bold text-sm text-gray-800">${qori.nama}</h3>
+                                <p class="text-[10px] text-gray-500">10 Rekaman Murottal</p>
+                            </div>
+                        </div>
+                        <div class="bg-green-100 w-8 h-8 rounded-full flex items-center justify-center text-[#5C8974]">
+                            <i id="icon-${qori.id}" class="fa-solid fa-chevron-down transition-transform duration-300"></i>
+                        </div>
+                    </button>
+                    
+                    <!-- Tempat List Audio Tersembunyi -->
+                    <div id="${qori.id}" class="accordion-content bg-green-50/50">
+                        <div class="p-3 pt-1">
+                            ${audioListHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += qoriHTML;
+        });
+
+        // Fungsi Buka Tutup (Akordeon)
+        function toggleQori(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            // Cek jika sedang terbuka, maka tutup
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                // Jika ingin hanya 1 terbuka dalam satu waktu (opsional)
+                // Tutup semua dulu
+                document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('open'));
+                document.querySelectorAll('[id^="icon-qori-"]').forEach(el => el.style.transform = 'rotate(0deg)');
+                
+                // Buka yang di-klik
+                content.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
+</body>
+</html>
