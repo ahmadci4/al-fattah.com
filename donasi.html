@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Fattah - Donasi & ZISWAF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .app-container { max-width: 480px; margin: 0 auto; background-color: #ffffff; min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+        .bg-donasi { background-image: url('images/bg-hero.jpg'); background-size: cover; background-position: center; }
+        /* Animasi Progress Bar */
+        @keyframes fillProgress { from { width: 0; } to { width: 85%; } }
+        .progress-animate { animation: fillProgress 1.5s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header & Hero Section -->
+        <div class="bg-donasi h-56 relative rounded-b-[30px] shadow-md">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#386955] via-[#386955]/80 to-black/40 rounded-b-[30px]"></div>
+            
+            <!-- Tombol Kembali & Judul -->
+            <div class="absolute top-4 left-4 right-4 flex items-center text-white z-10 space-x-3">
+                <a href="index.html" class="bg-black/30 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-black/50 transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <h1 class="text-lg font-bold tracking-wide">Donasi & ZISWAF</h1>
+            </div>
+
+            <!-- Teks Hero -->
+            <div class="absolute bottom-6 left-6 right-6 z-10 text-white text-center">
+                <i class="fa-solid fa-hand-holding-heart text-3xl mb-2 text-[#D4AF37]"></i>
+                <h2 class="text-xl font-extrabold mb-1 drop-shadow-md">Salurkan Amal Jariyah</h2>
+                <p class="text-[11px] text-gray-200">"Harta tidak akan berkurang dengan sedekah." (HR. Muslim)</p>
+            </div>
+        </div>
+
+        <!-- Highlight: Pembangunan Masjid -->
+        <div class="px-5 -mt-4 relative z-20">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-5">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <span class="bg-green-100 text-[#5C8974] text-[9px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">Program Utama</span>
+                        <h3 class="text-sm font-bold text-gray-800 mt-2">Penyelesaian Pembangunan Masjid</h3>
+                    </div>
+                    <i class="fa-solid fa-mosque text-3xl text-gray-200"></i>
+                </div>
+                
+                <p class="text-[11px] text-gray-600 leading-relaxed mb-4 text-justify">
+                    Alhamdulillah, atas izin Allah dan doa para jemaah, progres pembangunan Masjid saat ini telah mencapai tahap *finishing* (80% lebih). Mari bersama menjadi saksi dan bagian dari amal jariyah ini.
+                </p>
+
+                <!-- Progress Bar -->
+                <div class="mb-4">
+                    <div class="flex justify-between text-[10px] font-bold text-gray-700 mb-1">
+                        <span>Progres Pembangunan</span>
+                        <span class="text-[#5C8974]">85%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-gradient-to-r from-[#5C8974] to-[#386955] h-2.5 rounded-full progress-animate w-[85%] shadow-sm"></div>
+                    </div>
+                </div>
+
+                <!-- Info Rekening -->
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 mb-4">
+                    <p class="text-[10px] text-gray-500 font-semibold mb-1 uppercase">Transfer Donasi Pembangunan</p>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-bold text-gray-800 font-mono">BSI: 7123 456 789</p>
+                            <p class="text-[10px] text-gray-600">a.n Panitia Pembangunan Masjid</p>
+                        </div>
+                        <button onclick="copyRekening()" class="text-[#5C8974] hover:text-[#386955] bg-green-100 p-2 rounded-md transition" title="Salin Rekening">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tombol Konfirmasi WA -->
+                <!-- Menggunakan nomor WA Mas Irham untuk konfirmasi -->
+                <a href="https://wa.me/6285929141746?text=Assalamu%27alaikum%2C%20saya%20ingin%20konfirmasi%20donasi%20untuk%20pembangunan%20Masjid." target="_blank" class="w-full block text-center bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold text-xs py-3 rounded-lg shadow-md transition-all">
+                    <i class="fa-brands fa-whatsapp text-sm mr-1"></i> Konfirmasi Donasi
+                </a>
+            </div>
+        </div>
+
+        <!-- Penjelasan ZISWAF -->
+        <div class="mt-8 px-5">
+            <h3 class="text-base font-bold text-gray-800 mb-4 border-b pb-2">Jenis-Jenis Amal & Sedekah</h3>
+            
+            <div class="space-y-4">
+                <!-- Infaq -->
+                <div class="flex space-x-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-hand-holding-dollar text-blue-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-800">Infaq (Materi/Harta)</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 leading-relaxed text-justify">
+                            Mengeluarkan sebagian harta (uang/barang) untuk kepentingan yang diperintahkan Islam, seperti infaq masjid, fasilitas umum, atau yatim piatu. Hukumnya bisa wajib (seperti menafkahi keluarga) atau sunnah.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sedekah -->
+                <div class="flex space-x-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="bg-pink-50 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-face-smile text-pink-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-800">Sedekah (Universal)</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 leading-relaxed text-justify">
+                            Pemberian sukarela yang paling luas maknanya. Tidak harus berupa uang. Memberikan tenaga, menyingkirkan duri di jalan, hingga memberikan senyuman kepada saudara Muslim dihitung sebagai sedekah.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Zakat -->
+                <div class="flex space-x-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="bg-amber-50 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-scale-balanced text-amber-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-800">Zakat (Wajib)</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 leading-relaxed text-justify">
+                            Kewajiban bagi Muslim yang hartanya telah mencapai batas tertentu (Nishab) dan telah mengendap selama 1 tahun (Haul). Zakat wajib disalurkan kepada 8 asnaf (golongan) yang berhak menerima.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Wakaf -->
+                <div class="flex space-x-3 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                    <div class="bg-purple-50 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-building-wheat text-purple-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-800">Wakaf (Amal Jariyah)</h4>
+                        <p class="text-[10px] text-gray-500 mt-1 leading-relaxed text-justify">
+                            Menyerahkan hak milik harta benda yang tahan lama (seperti tanah, bangunan, Al-Qur'an) untuk kepentingan umat. Pahalanya akan terus mengalir meskipun yang berwakaf sudah meninggal dunia (amal jariyah).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifikasi Salin -->
+        <div id="toast-copy" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white text-xs px-4 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+            Nomor Rekening Disalin!
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 max-w-[480px] w-full bg-[#5C8974] rounded-t-2xl flex justify-around items-end pb-3 pt-4 text-white z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+            <a href="index.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-house text-2xl mb-1"></i><span class="text-[10px] font-semibold">Beranda</span>
+            </a>
+            <a href="al-quran.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-book-open text-2xl mb-1"></i><span class="text-[10px] font-semibold">Al-Qur'an</span>
+            </a>
+            <a href="pengumuman.html" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-bullhorn text-2xl mb-1"></i><span class="text-[10px] font-semibold">Pengumuman</span>
+            </a>
+            <a href="#" class="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-mosque text-2xl mb-1"></i><span class="text-[10px] font-semibold">Muqadimah</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk menyalin nomor rekening
+        function copyRekening() {
+            const norek = "7123456789";
+            navigator.clipboard.writeText(norek).then(() => {
+                const toast = document.getElementById('toast-copy');
+                toast.classList.remove('opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                }, 2000);
+            }).catch(err => {
+                console.error('Gagal menyalin: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
