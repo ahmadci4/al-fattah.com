@@ -369,18 +369,30 @@
             try {
                 const res = await fetch(url);
                 const data = await res.json();
+                
+                // --- LOGIKA TESTING AZAN (Maghrib + 2 Menit dari sekarang) ---
+                const waktuTest = new Date();
+                waktuTest.setMinutes(waktuTest.getMinutes() + 2);
+                const jamTest = String(waktuTest.getHours()).padStart(2, '0');
+                const menitTest = String(waktuTest.getMinutes()).padStart(2, '0');
+                const testMagrib = `${jamTest}:${menitTest}`;
+                // -------------------------------------------------------------
+
                 prayerTimes = {
                     "Subuh": data.data.timings.Fajr,
                     "Dzuhur": data.data.timings.Dhuhr,
                     "Ashar": data.data.timings.Asr,
-                    "Magrib": data.data.timings.Maghrib,
+                    "Magrib": testMagrib, // <-- Maghrib sekarang menggunakan waktu testing
                     "Isya": data.data.timings.Isha
                 };
 
                 document.getElementById('time-fajr').innerText = prayerTimes.Subuh;
                 document.getElementById('time-dhuhr').innerText = prayerTimes.Dzuhur;
                 document.getElementById('time-asr').innerText = prayerTimes.Ashar;
-                document.getElementById('time-maghrib').innerText = prayerTimes.Magrib;
+                
+                // Menampilkan waktu test magrib di layar agar Mas Irham bisa memantau
+                document.getElementById('time-maghrib').innerText = prayerTimes.Magrib; 
+                
                 document.getElementById('time-isha').innerText = prayerTimes.Isya;
 
                 // Update Hijri Date dari API
@@ -397,7 +409,6 @@
                 console.log("Gagal fetch jadwal:", e);
             }
         }
-
         // Live Clock dan Hitung Mundur (NaN Fix Menggunakan Integer Detik)
         let azanPlayedFor = null;
 
